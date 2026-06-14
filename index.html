@@ -3,551 +3,196 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project.918 — Draft Checkout</title>
+  <title>Project.918 Checkout Test</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
+      margin: 0;
       min-height: 100vh;
-      background: #e9eaec;
-      color: #101010;
-      font-family: Arial, Helvetica, sans-serif;
-      overflow-x: hidden;
-    }
-
-    .page {
-      width: 100%;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-    }
-
-    .left {
-      background: #090909;
+      background: #080808;
       color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .left::before {
-      content: "";
-      position: absolute;
-      inset: -20%;
-      background:
-        radial-gradient(circle at 40% 25%, rgba(255,255,255,.16), transparent 22%),
-        radial-gradient(circle at 75% 70%, rgba(255,255,255,.09), transparent 28%);
-      filter: blur(8px);
-    }
-
-    .shirt-wrap {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
-
-    .shirt {
-      width: 310px;
-      height: 390px;
-      background: #111;
-      border-radius: 52px 52px 24px 24px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 50px 120px rgba(0,0,0,.65);
-      margin: 0 auto 32px;
-    }
-
-    .shirt::before,
-    .shirt::after {
-      content: "";
-      position: absolute;
-      top: 54px;
-      width: 92px;
-      height: 150px;
-      background: inherit;
-      border-radius: 36px;
-      z-index: -1;
-    }
-
-    .shirt::before {
-      left: -64px;
-      transform: rotate(18deg);
-    }
-
-    .shirt::after {
-      right: -64px;
-      transform: rotate(-18deg);
-    }
-
-    .print {
-      width: 98px;
-      height: 130px;
-      border: 1px solid rgba(255,255,255,.25);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      line-height: 1.25;
-      text-transform: uppercase;
-      color: #d8b56d;
-    }
-
-    .mock-note {
-      color: #8d8d8d;
-      font-size: 13px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .right {
-      padding: 54px;
+      font-family: Arial, Helvetica, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .card {
-      width: 100%;
-      max-width: 520px;
-      background: #ffffff;
-      border-radius: 34px;
-      padding: 34px;
-      box-shadow: 0 30px 90px rgba(0,0,0,.08);
+      width: 360px;
+      background: #111;
+      border: 1px solid #262626;
+      border-radius: 24px;
+      padding: 28px;
     }
 
     .brand {
       font-size: 12px;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: #777;
-      margin-bottom: 22px;
+      color: #aaa;
+      margin-bottom: 16px;
     }
 
     h1 {
-      font-size: 46px;
-      line-height: .95;
-      letter-spacing: -1.5px;
-      margin-bottom: 12px;
+      margin: 0 0 10px;
+      font-size: 34px;
     }
 
-    .desc {
-      color: #555;
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 26px;
-    }
-
-    .price-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 0;
-      border-top: 1px solid #e5e5e5;
-      border-bottom: 1px solid #e5e5e5;
-      margin-bottom: 24px;
-    }
-
-    .price-row span {
-      color: #777;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 1.6px;
-    }
-
-    .price-row strong {
-      font-size: 24px;
+    .price {
+      font-size: 22px;
+      margin-bottom: 22px;
     }
 
     label {
       display: block;
+      margin-top: 14px;
+      margin-bottom: 7px;
+      color: #999;
       font-size: 12px;
-      letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #777;
-      margin-bottom: 8px;
-      margin-top: 16px;
+      letter-spacing: 1px;
     }
 
     input,
     select {
       width: 100%;
-      height: 50px;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 0 14px;
-      background: #f7f7f7;
-      color: #111;
-      font-size: 15px;
-      outline: none;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: #111;
-      background: #fff;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .summary {
-      margin-top: 22px;
-      background: #f5f5f5;
-      border: 1px solid #e4e4e4;
-      border-radius: 20px;
-      padding: 16px;
-      font-size: 13px;
-      line-height: 1.7;
-      white-space: pre-line;
-      color: #333;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #050505;
+      color: white;
+      padding: 0 12px;
+      font-size: 14px;
+      box-sizing: border-box;
     }
 
     .checkout-btn {
       width: 100%;
-      height: 58px;
-      border: 0;
+      height: 54px;
+      margin-top: 22px;
       border-radius: 999px;
-      background: #101010;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 800;
+      border: none;
+      background: #40DCA5;
+      color: #050505;
+      font-size: 15px;
+      font-weight: 900;
       cursor: pointer;
-      margin-top: 18px;
-      transition: transform .15s ease, opacity .15s ease;
     }
 
-    .checkout-btn:hover {
-      transform: translateY(-1px);
-      opacity: .92;
-    }
-
-    .small {
+    .note {
       margin-top: 12px;
-      color: #777;
       font-size: 12px;
       line-height: 1.5;
+      color: #888;
       text-align: center;
     }
 
-    .overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
+    .copied {
       display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
-      background: rgba(0,0,0,.72);
-      backdrop-filter: blur(18px);
-    }
-
-    .overlay.active {
-      display: flex;
-    }
-
-    .modal {
-      width: min(1100px, 100%);
-      height: min(850px, 94vh);
-      background: #f0f1f3;
-      border-radius: 30px;
-      overflow: hidden;
-      box-shadow: 0 50px 160px rgba(0,0,0,.6);
-      position: relative;
-    }
-
-    .modal-top {
-      height: 76px;
-      background: #0d0d0d;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      position: relative;
-      z-index: 3;
-    }
-
-    .modal-top .mini {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #aaa;
-      margin-bottom: 5px;
-    }
-
-    .modal-top h2 {
-      font-size: 22px;
-      line-height: 1;
-      margin: 0;
-    }
-
-    .close-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 1px solid #2c2c2c;
-      background: #171717;
-      color: white;
-      font-size: 28px;
-      line-height: 1;
-      cursor: pointer;
-    }
-
-    .frame-wrap {
-      height: calc(100% - 76px);
-      position: relative;
-      overflow: hidden;
-      background: #eef0f3;
-    }
-
-    #bmcFrame {
-      position: absolute;
-      left: 0;
-      top: -150px;
-      width: 100%;
-      height: calc(100% + 150px);
-      border: 0;
-      background: white;
-    }
-
-    .loading {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      color: #777;
-      pointer-events: none;
-    }
-
-    @media (max-width: 900px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
-
-      .left {
-        min-height: 48vh;
-        padding: 42px;
-      }
-
-      .right {
-        padding: 24px;
-      }
-
-      h1 {
-        font-size: 38px;
-      }
-
-      .shirt {
-        width: 230px;
-        height: 300px;
-      }
-
-      .modal {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-      }
-
-      .overlay {
-        padding: 0;
-      }
-
-      #bmcFrame {
-        top: -130px;
-        height: calc(100% + 130px);
-      }
+      margin-top: 12px;
+      font-size: 12px;
+      color: #40DCA5;
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
-    <section class="left">
-      <div class="shirt-wrap">
-        <div class="shirt">
-          <div class="print">Jordan 97'<br>Champions<br>Tee</div>
-        </div>
-        <div class="mock-note">Project.918 Test Product</div>
-      </div>
-    </section>
+  <main class="card">
+    <div class="brand">Project.918</div>
 
-    <section class="right">
-      <div class="card">
-        <div class="brand">project.918 shop</div>
+    <h1>Test Tee</h1>
+    <div class="price">$1.00</div>
 
-        <h1>Jordan 97' Champions Tee</h1>
+    <label>Size</label>
+    <select id="size">
+      <option>S</option>
+      <option selected>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
 
-        <p class="desc">
-          Draft checkout test. Your site collects the order details first, then BMC handles the payment.
-        </p>
+    <label>Name</label>
+    <input id="name" placeholder="Your name" />
 
-        <div class="price-row">
-          <span>Total due</span>
-          <strong>$36.99</strong>
-        </div>
+    <label>Email</label>
+    <input id="email" placeholder="your@email.com" />
 
-        <div class="grid-2">
-          <div>
-            <label for="size">Size</label>
-            <select id="size">
-              <option>S</option>
-              <option selected>M</option>
-              <option>L</option>
-              <option>XL</option>
-            </select>
-          </div>
+    <button class="checkout-btn" onclick="checkout()">
+      Checkout
+    </button>
 
-          <div>
-            <label for="color">Color</label>
-            <select id="color">
-              <option selected>Black</option>
-              <option>White</option>
-            </select>
-          </div>
-        </div>
+    <div class="copied" id="copied">
+      Order details copied. Paste them in the BMC message box.
+    </div>
 
-        <label for="name">Name</label>
-        <input id="name" placeholder="Your name" />
-
-        <label for="email">Email</label>
-        <input id="email" placeholder="your@email.com" />
-
-        <div class="summary" id="summary"></div>
-
-        <button class="checkout-btn" onclick="openCheckout()">
-          Checkout
-        </button>
-
-        <p class="small">
-          Checkout opens securely in an overlay. Order details are copied automatically.
-        </p>
-      </div>
-    </section>
+    <p class="note">
+      Payment opens on this page through Buy Me a Coffee.
+    </p>
   </main>
 
-  <div class="overlay" id="checkoutOverlay">
-    <div class="modal">
-      <div class="modal-top">
-        <div>
-          <div class="mini">project.918</div>
-          <h2>Checkout</h2>
-        </div>
-
-        <button class="close-btn" onclick="closeCheckout()">×</button>
-      </div>
-
-      <div class="frame-wrap">
-        <div class="loading" id="loadingText">Loading secure checkout…</div>
-
-        <iframe
-          id="bmcFrame"
-          title="Project.918 Checkout"
-          allow="payment *"
-        ></iframe>
-      </div>
-    </div>
-  </div>
+  <!-- Hidden BMC widget. We use it as the payment engine. -->
+  <script
+    data-name="BMC-Widget"
+    data-cfasync="false"
+    src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+    data-id="project.918"
+    data-description="Project.918 Checkout"
+    data-message="Paste your Project.918 order details here."
+    data-color="#40DCA5"
+    data-position="Right"
+    data-x_margin="18"
+    data-y_margin="18">
+  </script>
 
   <script>
-    /*
-      Your BMC item checkout URL.
-      Replace this only if the checkout URL changes.
-    */
-    const BMC_CHECKOUT_URL = "https://buymeacoffee.com/570lns1kjb/extras/checkout/a205c929-9779-4fdd-a626-cd263acb5c4f";
-
-    const product = "Jordan 97' Champions Tee";
-    const price = "$36.99";
     const orderId = "P918-" + Math.floor(100000 + Math.random() * 900000);
 
-    const sizeInput = document.getElementById("size");
-    const colorInput = document.getElementById("color");
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const summary = document.getElementById("summary");
+    function buildOrderDetails() {
+      const size = document.getElementById("size").value;
+      const name = document.getElementById("name").value || "-";
+      const email = document.getElementById("email").value || "-";
 
-    const overlay = document.getElementById("checkoutOverlay");
-    const frame = document.getElementById("bmcFrame");
-    const loadingText = document.getElementById("loadingText");
-
-    function buildOrderText() {
       return `Order ID: ${orderId}
-Product: ${product}
-Price: ${price}
-Size: ${sizeInput.value}
-Color: ${colorInput.value}
-Name: ${nameInput.value || "-"}
-Email: ${emailInput.value || "-"}`;
+Product: Project.918 Test Tee
+Price: $1.00
+Size: ${size}
+Name: ${name}
+Email: ${email}`;
     }
 
-    function updateSummary() {
-      summary.textContent = buildOrderText();
-    }
-
-    async function copyOrderDetails() {
-      const text = buildOrderText();
+    async function checkout() {
+      const orderDetails = buildOrderDetails();
 
       try {
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(orderDetails);
+        document.getElementById("copied").style.display = "block";
       } catch (e) {
-        console.log("Clipboard blocked. Order details:", text);
+        alert(orderDetails);
+      }
+
+      const bmcButton = document.querySelector("#bmc-wbtn");
+
+      if (bmcButton) {
+        bmcButton.click();
+      } else {
+        alert("Checkout is loading. Try again in one second.");
       }
     }
 
-    async function openCheckout() {
-      await copyOrderDetails();
+    // Hide the original floating BMC button
+    const hideBMC = setInterval(() => {
+      const bmcButton = document.querySelector("#bmc-wbtn");
 
-      overlay.classList.add("active");
-      document.body.style.overflow = "hidden";
-
-      if (!frame.src) {
-        frame.src = BMC_CHECKOUT_URL;
+      if (bmcButton) {
+        bmcButton.style.opacity = "0";
+        bmcButton.style.pointerEvents = "none";
+        bmcButton.style.width = "1px";
+        bmcButton.style.height = "1px";
+        bmcButton.style.overflow = "hidden";
+        clearInterval(hideBMC);
       }
-
-      setTimeout(() => {
-        loadingText.style.display = "none";
-      }, 1800);
-    }
-
-    function closeCheckout() {
-      overlay.classList.remove("active");
-      document.body.style.overflow = "";
-    }
-
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "Escape") {
-        closeCheckout();
-      }
-    });
-
-    overlay.addEventListener("click", function(e) {
-      if (e.target === overlay) {
-        closeCheckout();
-      }
-    });
-
-    sizeInput.addEventListener("change", updateSummary);
-    colorInput.addEventListener("change", updateSummary);
-    nameInput.addEventListener("input", updateSummary);
-    emailInput.addEventListener("input", updateSummary);
-
-    updateSummary();
+    }, 300);
   </script>
 </body>
 </html>
