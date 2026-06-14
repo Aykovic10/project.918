@@ -16,8 +16,7 @@
     html,
     body {
       width: 100%;
-      height: 100%;
-      overflow: hidden;
+      min-height: 100%;
     }
 
     body {
@@ -29,6 +28,7 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
+      overflow-x: hidden;
     }
 
     .card {
@@ -85,7 +85,7 @@
 
     input:focus,
     select:focus {
-      border-color: #40DCA5;
+      border-color: #111;
     }
 
     .summary {
@@ -106,7 +106,7 @@
       margin-top: 22px;
       border-radius: 999px;
       border: none;
-      background: #40DCA5;
+      background: #ffffff;
       color: #050505;
       font-size: 16px;
       font-weight: 900;
@@ -123,7 +123,7 @@
       display: none;
       margin-top: 13px;
       font-size: 12px;
-      color: #40DCA5;
+      color: #ffffff;
       text-align: center;
     }
 
@@ -135,92 +135,9 @@
       line-height: 1.5;
     }
 
-    /* Dark backdrop */
-    #p918BmcBackdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 9997;
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(14px);
-      display: none;
-    }
-
-    #p918BmcBackdrop.active {
-      display: block;
-    }
-
     /*
-      Our clean centered shell.
-      The BMC iframe gets moved inside this.
-      overflow:hidden clips the ugly internal scrollbar.
-    */
-    #p918BmcShell {
-      position: fixed;
-      z-index: 9999;
-      top: 50%;
-      left: 50%;
-      width: min(530px, calc(100vw - 34px));
-      height: min(760px, calc(100vh - 34px));
-      transform: translate(-50%, -50%);
-      background: #ffffff;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 45px 140px rgba(0, 0, 0, 0.72);
-      display: none;
-    }
-
-    #p918BmcShell.active {
-      display: block;
-    }
-
-    /*
-      The iframe is made wider than the shell.
-      Its scrollbar moves outside the clipped visible area.
-    */
-    #p918BmcShell #bmc-iframe,
-    #p918BmcShell iframe[src*="buymeacoffee.com"],
-    #p918BmcShell iframe[id*="bmc"],
-    #p918BmcShell iframe[name*="bmc"] {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: auto !important;
-      bottom: auto !important;
-      transform: none !important;
-      width: calc(100% + 34px) !important;
-      height: 100% !important;
-      border: 0 !important;
-      border-radius: 28px !important;
-      z-index: 1 !important;
-      box-shadow: none !important;
-      overflow: hidden !important;
-    }
-
-    /*
-      Our close button sits above the iframe.
-    */
-    #p918BmcClose {
-      position: absolute;
-      z-index: 3;
-      top: 22px;
-      right: 34px;
-      width: 38px;
-      height: 38px;
-      border-radius: 999px;
-      border: none;
-      background: transparent;
-      color: #111;
-      font-size: 34px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /*
-      Hide original floating BMC button.
-      We still click it with JS.
+      Hide the original floating BMC button.
+      It still exists, but the customer only sees our Checkout button.
     */
     #bmc-wbtn {
       opacity: 0 !important;
@@ -244,26 +161,6 @@
 
       h1 {
         font-size: 34px;
-      }
-
-      #p918BmcShell {
-        width: calc(100vw - 18px);
-        height: calc(100vh - 44px);
-        border-radius: 24px;
-      }
-
-      #p918BmcShell #bmc-iframe,
-      #p918BmcShell iframe[src*="buymeacoffee.com"],
-      #p918BmcShell iframe[id*="bmc"],
-      #p918BmcShell iframe[name*="bmc"] {
-        width: calc(100% + 34px) !important;
-        border-radius: 24px !important;
-      }
-
-      #p918BmcClose {
-        top: 18px;
-        right: 30px;
-        font-size: 32px;
       }
     }
   </style>
@@ -311,12 +208,6 @@
     </p>
   </main>
 
-  <div id="p918BmcBackdrop"></div>
-
-  <div id="p918BmcShell">
-    <button id="p918BmcClose" onclick="closeBMC()">×</button>
-  </div>
-
   <!-- BUY ME A COFFEE WIDGET -->
   <script
     data-name="BMC-Widget"
@@ -324,8 +215,8 @@
     src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
     data-id="project.918"
     data-description="Project.918 Checkout"
-    data-message="Paste your Project.918 order details here."
-    data-color="#40DCA5"
+    data-message=""
+    data-color="#111111"
     data-position="Right"
     data-x_margin="18"
     data-y_margin="18">
@@ -342,12 +233,6 @@
     const emailInput = document.getElementById("email");
     const summary = document.getElementById("summary");
     const copied = document.getElementById("copied");
-
-    const backdrop = document.getElementById("p918BmcBackdrop");
-    const shell = document.getElementById("p918BmcShell");
-    const closeButton = document.getElementById("p918BmcClose");
-
-    let bmcIsOpen = false;
 
     function buildOrderDetails() {
       return `Order ID: ${orderId}
@@ -374,53 +259,6 @@ Email: ${emailInput.value || "-"}`;
       }
     }
 
-    function findBMCFrame() {
-      const frames = [
-        document.getElementById("bmc-iframe"),
-        ...document.querySelectorAll('iframe[src*="buymeacoffee.com"]'),
-        ...document.querySelectorAll('iframe[id*="bmc"]'),
-        ...document.querySelectorAll('iframe[name*="bmc"]')
-      ].filter(Boolean);
-
-      if (!frames.length) return null;
-
-      /*
-        Pick the biggest/most visible BMC iframe.
-        This avoids grabbing tiny hidden helper iframes.
-      */
-      return frames.sort((a, b) => {
-        const ar = a.getBoundingClientRect();
-        const br = b.getBoundingClientRect();
-        return (br.width * br.height) - (ar.width * ar.height);
-      })[0];
-    }
-
-    function dockBMCFrame() {
-      const frame = findBMCFrame();
-
-      if (!frame) return false;
-
-      if (frame.parentElement !== shell) {
-        shell.insertBefore(frame, closeButton);
-      }
-
-      frame.style.setProperty("position", "absolute", "important");
-      frame.style.setProperty("top", "0", "important");
-      frame.style.setProperty("left", "0", "important");
-      frame.style.setProperty("right", "auto", "important");
-      frame.style.setProperty("bottom", "auto", "important");
-      frame.style.setProperty("transform", "none", "important");
-      frame.style.setProperty("width", "calc(100% + 34px)", "important");
-      frame.style.setProperty("height", "100%", "important");
-      frame.style.setProperty("border", "0", "important");
-      frame.style.setProperty("border-radius", "28px", "important");
-      frame.style.setProperty("z-index", "1", "important");
-      frame.style.setProperty("box-shadow", "none", "important");
-      frame.style.setProperty("overflow", "hidden", "important");
-
-      return true;
-    }
-
     async function checkout() {
       await copyOrderDetails();
 
@@ -431,56 +269,8 @@ Email: ${emailInput.value || "-"}`;
         return;
       }
 
-      bmcIsOpen = true;
-      document.body.classList.add("bmc-open");
-      backdrop.classList.add("active");
-      shell.classList.add("active");
-
       bmcButton.click();
-
-      /*
-        BMC creates/repositions the iframe after click, so we dock it a few times.
-      */
-      setTimeout(dockBMCFrame, 100);
-      setTimeout(dockBMCFrame, 300);
-      setTimeout(dockBMCFrame, 600);
-      setTimeout(dockBMCFrame, 1000);
-      setTimeout(dockBMCFrame, 1600);
-      setTimeout(dockBMCFrame, 2400);
     }
-
-    function closeBMC() {
-      const bmcButton = document.querySelector("#bmc-wbtn");
-
-      if (bmcIsOpen && bmcButton) {
-        bmcButton.click();
-      }
-
-      bmcIsOpen = false;
-      document.body.classList.remove("bmc-open");
-      backdrop.classList.remove("active");
-      shell.classList.remove("active");
-    }
-
-    backdrop.addEventListener("click", closeBMC);
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        closeBMC();
-      }
-    });
-
-    window.addEventListener("resize", () => {
-      if (bmcIsOpen) {
-        dockBMCFrame();
-      }
-    });
-
-    setInterval(() => {
-      if (bmcIsOpen) {
-        dockBMCFrame();
-      }
-    }, 300);
 
     sizeInput.addEventListener("change", updateSummary);
     colorInput.addEventListener("change", updateSummary);
