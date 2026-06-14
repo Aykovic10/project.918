@@ -149,6 +149,26 @@
       bottom: 0 !important;
     }
 
+    /*
+      Center the BMC widget popup.
+      No cropping, no masking, no fake shell.
+      Just centered + soft shadow.
+    */
+    body.bmc-open #bmc-iframe,
+    body.bmc-open iframe[src*="buymeacoffee.com"],
+    body.bmc-open iframe[id*="bmc"],
+    body.bmc-open iframe[name*="bmc"] {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      right: auto !important;
+      bottom: auto !important;
+      transform: translate(-50%, -50%) !important;
+      z-index: 9999 !important;
+      border-radius: 28px !important;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45) !important;
+    }
+
     @media (max-width: 540px) {
       body {
         padding: 18px;
@@ -161,6 +181,15 @@
 
       h1 {
         font-size: 34px;
+      }
+
+      body.bmc-open #bmc-iframe,
+      body.bmc-open iframe[src*="buymeacoffee.com"],
+      body.bmc-open iframe[id*="bmc"],
+      body.bmc-open iframe[name*="bmc"] {
+        width: calc(100vw - 24px) !important;
+        max-width: calc(100vw - 24px) !important;
+        border-radius: 22px !important;
       }
     }
   </style>
@@ -259,6 +288,27 @@ Email: ${emailInput.value || "-"}`;
       }
     }
 
+    function centerBMCWidget() {
+      const frames = [
+        document.getElementById("bmc-iframe"),
+        ...document.querySelectorAll('iframe[src*="buymeacoffee.com"]'),
+        ...document.querySelectorAll('iframe[id*="bmc"]'),
+        ...document.querySelectorAll('iframe[name*="bmc"]')
+      ].filter(Boolean);
+
+      frames.forEach((frame) => {
+        frame.style.setProperty("position", "fixed", "important");
+        frame.style.setProperty("top", "50%", "important");
+        frame.style.setProperty("left", "50%", "important");
+        frame.style.setProperty("right", "auto", "important");
+        frame.style.setProperty("bottom", "auto", "important");
+        frame.style.setProperty("transform", "translate(-50%, -50%)", "important");
+        frame.style.setProperty("z-index", "9999", "important");
+        frame.style.setProperty("border-radius", "28px", "important");
+        frame.style.setProperty("box-shadow", "0 28px 70px rgba(0,0,0,0.45)", "important");
+      });
+    }
+
     async function checkout() {
       await copyOrderDetails();
 
@@ -269,8 +319,21 @@ Email: ${emailInput.value || "-"}`;
         return;
       }
 
+      document.body.classList.add("bmc-open");
+
       bmcButton.click();
+
+      setTimeout(centerBMCWidget, 100);
+      setTimeout(centerBMCWidget, 300);
+      setTimeout(centerBMCWidget, 700);
+      setTimeout(centerBMCWidget, 1200);
     }
+
+    setInterval(() => {
+      if (document.body.classList.contains("bmc-open")) {
+        centerBMCWidget();
+      }
+    }, 400);
 
     sizeInput.addEventListener("change", updateSummary);
     colorInput.addEventListener("change", updateSummary);
