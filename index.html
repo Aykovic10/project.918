@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>project.918</title>
+  <meta name="description" content="project.918 — championship inspired apparel. Free worldwide shipping." />
+
+  <link rel="icon" type="image/webp" href="https://cdn.buymeacoffee.com/uploads/profile_pictures/2025/06/c0781a21d7ef67a74375c422ce5d52f8.png@300w_0e.webp" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body>
+  <div class="announcement" id="announcement"></div>
+
+  <header class="site-header">
+    <nav class="nav-left" aria-label="Primary">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="faq.html" class="nav-link">FAQ</a>
+    </nav>
+
+    <a class="brand-logo" href="index.html" aria-label="project.918 home">
+      <img id="brandLogo" alt="project.918" />
+      <span class="brand-fallback">project.918</span>
+    </a>
+
+    <nav class="nav-right" aria-label="Secondary">
+      <a href="https://instagram.com/project.918" target="_blank" rel="noopener" class="nav-link">Instagram</a>
+      <button class="bag-button" id="openCartButton" type="button">Bag <span id="cartCount">0</span></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow" id="heroEyebrow">DROP 01</p>
+        <h1 id="heroTitle">SPORT ICONS REWORKED</h1>
+        <p id="heroSubtitle">Clean graphic tees inspired by championship moments.</p>
+        <a href="#products" class="hero-button">Shop now</a>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <img id="heroImageLeft" class="hero-product hero-product-left" alt="" />
+        <img id="heroImageRight" class="hero-product hero-product-right" alt="" />
+      </div>
+    </section>
+
+    <section class="toolbar" id="products">
+      <div class="category-row">
+        <button class="category-chip active" data-filter="all">All</button>
+        <button class="category-chip" data-filter="Tops">Tops</button>
+      </div>
+
+      <div class="sort-note">
+        Free delivery worldwide
+      </div>
+    </section>
+
+    <section class="product-grid" id="productGrid" aria-live="polite"></section>
+  </main>
+
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+    <div class="cart-panel">
+      <div class="cart-head">
+        <h2>Bag</h2>
+        <button type="button" class="icon-button" id="closeCartButton" aria-label="Close bag">×</button>
+      </div>
+
+      <div id="cartItems" class="cart-items"></div>
+
+      <form class="checkout-form" id="checkoutForm">
+        <h3>Shipping details</h3>
+
+        <div class="field-grid">
+          <label>
+            Full name
+            <input id="customerName" required placeholder="Your name" autocomplete="name" />
+          </label>
+
+          <label>
+            Email
+            <input id="customerEmail" type="email" required placeholder="you@email.com" autocomplete="email" />
+          </label>
+        </div>
+
+        <label>
+          Instagram / phone <span>optional</span>
+          <input id="customerContact" placeholder="@username or phone" />
+        </label>
+
+        <label>
+          Country
+          <input id="customerCountry" required placeholder="Country" autocomplete="country-name" />
+        </label>
+
+        <label>
+          Full shipping address
+          <textarea id="customerAddress" required placeholder="City, street, building, apartment, postal code"></textarea>
+        </label>
+      </form>
+
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span>Total</span>
+          <strong id="cartTotal">$0</strong>
+        </div>
+
+        <p class="checkout-warning">
+          Checkout opens the Buy Me a Coffee payment widget. Enter the exact total and paste the copied order details in the message box.
+        </p>
+
+        <button class="checkout-main" id="checkoutButton" type="button">Checkout</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="product-modal" id="productModal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <article class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="closeProductModal" aria-label="Close product">×</button>
+
+      <div class="modal-gallery">
+        <img id="modalMainImage" alt="" />
+        <div class="thumb-row">
+          <button type="button" class="thumb active" id="frontThumb">Front</button>
+          <button type="button" class="thumb" id="backThumb">Back</button>
+        </div>
+      </div>
+
+      <div class="modal-info">
+        <p class="eyebrow">project.918</p>
+        <h2 id="modalTitle"></h2>
+        <p class="modal-price" id="modalPrice"></p>
+        <p class="modal-description" id="modalDescription"></p>
+
+        <label>
+          Size
+          <select id="modalSize"></select>
+        </label>
+
+        <label>
+          Color
+          <select id="modalColor"></select>
+        </label>
+
+        <label>
+          Quantity
+          <select id="modalQuantity">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+          </select>
+        </label>
+
+        <button class="add-to-bag" id="addToBagButton">Add to bag</button>
+
+        <p class="mini-note">Free worldwide shipping. Dispatches within 10 business days.</p>
+      </div>
+    </article>
+  </div>
+
+  <!-- Buy Me a Coffee widget. Hidden launcher; opened by our Checkout button. -->
+  <script
+    data-name="BMC-Widget"
+    data-cfasync="false"
+    src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+    data-id="project.918"
+    data-description="Project.918 Checkout"
+    data-message="Paste your copied Project.918 order details here."
+    data-color="#111111"
+    data-position="Right"
+    data-x_margin="18"
+    data-y_margin="18">
+  </script>
+
+  <script src="products.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
