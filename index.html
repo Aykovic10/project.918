@@ -1,21 +1,553 @@
-<button class="checkout-btn" onclick="openBMCCheckout()">
-  Checkout
-</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project.918 — Draft Checkout</title>
 
-<script>
-  const BMC_CHECKOUT_URL = "https://buymeacoffee.com/project.918/extras/checkout/a205c0cb-ad0e-47f1-a4bf-0778465ed2cf";
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  function openBMCCheckout() {
-    const width = 1050;
-    const height = 780;
+    body {
+      min-height: 100vh;
+      background: #e9eaec;
+      color: #101010;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
 
-    const left = window.screenX + (window.outerWidth - width) / 2;
-    const top = window.screenY + (window.outerHeight - height) / 2;
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+    }
 
-    window.open(
-      BMC_CHECKOUT_URL,
-      "project918_checkout",
-      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
-    );
-  }
-</script>
+    .left {
+      background: #090909;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left::before {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background:
+        radial-gradient(circle at 40% 25%, rgba(255,255,255,.16), transparent 22%),
+        radial-gradient(circle at 75% 70%, rgba(255,255,255,.09), transparent 28%);
+      filter: blur(8px);
+    }
+
+    .shirt-wrap {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .shirt {
+      width: 310px;
+      height: 390px;
+      background: #111;
+      border-radius: 52px 52px 24px 24px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 50px 120px rgba(0,0,0,.65);
+      margin: 0 auto 32px;
+    }
+
+    .shirt::before,
+    .shirt::after {
+      content: "";
+      position: absolute;
+      top: 54px;
+      width: 92px;
+      height: 150px;
+      background: inherit;
+      border-radius: 36px;
+      z-index: -1;
+    }
+
+    .shirt::before {
+      left: -64px;
+      transform: rotate(18deg);
+    }
+
+    .shirt::after {
+      right: -64px;
+      transform: rotate(-18deg);
+    }
+
+    .print {
+      width: 98px;
+      height: 130px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      line-height: 1.25;
+      text-transform: uppercase;
+      color: #d8b56d;
+    }
+
+    .mock-note {
+      color: #8d8d8d;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .right {
+      padding: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: #ffffff;
+      border-radius: 34px;
+      padding: 34px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.08);
+    }
+
+    .brand {
+      font-size: 12px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: 46px;
+      line-height: .95;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+
+    .desc {
+      color: #555;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+      border-top: 1px solid #e5e5e5;
+      border-bottom: 1px solid #e5e5e5;
+      margin-bottom: 24px;
+    }
+
+    .price-row span {
+      color: #777;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+    }
+
+    .price-row strong {
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 50px;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 0 14px;
+      background: #f7f7f7;
+      color: #111;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #111;
+      background: #fff;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .summary {
+      margin-top: 22px;
+      background: #f5f5f5;
+      border: 1px solid #e4e4e4;
+      border-radius: 20px;
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-line;
+      color: #333;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      height: 58px;
+      border: 0;
+      border-radius: 999px;
+      background: #101010;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 18px;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .checkout-btn:hover {
+      transform: translateY(-1px);
+      opacity: .92;
+    }
+
+    .small {
+      margin-top: 12px;
+      color: #777;
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(18px);
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      width: min(1100px, 100%);
+      height: min(850px, 94vh);
+      background: #f0f1f3;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 50px 160px rgba(0,0,0,.6);
+      position: relative;
+    }
+
+    .modal-top {
+      height: 76px;
+      background: #0d0d0d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .modal-top .mini {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 5px;
+    }
+
+    .modal-top h2 {
+      font-size: 22px;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .close-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid #2c2c2c;
+      background: #171717;
+      color: white;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .frame-wrap {
+      height: calc(100% - 76px);
+      position: relative;
+      overflow: hidden;
+      background: #eef0f3;
+    }
+
+    #bmcFrame {
+      position: absolute;
+      left: 0;
+      top: -150px;
+      width: 100%;
+      height: calc(100% + 150px);
+      border: 0;
+      background: white;
+    }
+
+    .loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #777;
+      pointer-events: none;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .left {
+        min-height: 48vh;
+        padding: 42px;
+      }
+
+      .right {
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .shirt {
+        width: 230px;
+        height: 300px;
+      }
+
+      .modal {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+      }
+
+      .overlay {
+        padding: 0;
+      }
+
+      #bmcFrame {
+        top: -130px;
+        height: calc(100% + 130px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="left">
+      <div class="shirt-wrap">
+        <div class="shirt">
+          <div class="print">Jordan 97'<br>Champions<br>Tee</div>
+        </div>
+        <div class="mock-note">Project.918 Test Product</div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="card">
+        <div class="brand">project.918 shop</div>
+
+        <h1>Jordan 97' Champions Tee</h1>
+
+        <p class="desc">
+          Draft checkout test. Your site collects the order details first, then BMC handles the payment.
+        </p>
+
+        <div class="price-row">
+          <span>Total due</span>
+          <strong>$36.99</strong>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="size">Size</label>
+            <select id="size">
+              <option>S</option>
+              <option selected>M</option>
+              <option>L</option>
+              <option>XL</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="color">Color</label>
+            <select id="color">
+              <option selected>Black</option>
+              <option>White</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="name">Name</label>
+        <input id="name" placeholder="Your name" />
+
+        <label for="email">Email</label>
+        <input id="email" placeholder="your@email.com" />
+
+        <div class="summary" id="summary"></div>
+
+        <button class="checkout-btn" onclick="openCheckout()">
+          Checkout
+        </button>
+
+        <p class="small">
+          Checkout opens securely in an overlay. Order details are copied automatically.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div class="overlay" id="checkoutOverlay">
+    <div class="modal">
+      <div class="modal-top">
+        <div>
+          <div class="mini">project.918</div>
+          <h2>Checkout</h2>
+        </div>
+
+        <button class="close-btn" onclick="closeCheckout()">×</button>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="loading" id="loadingText">Loading secure checkout…</div>
+
+        <iframe
+          id="bmcFrame"
+          title="Project.918 Checkout"
+          allow="payment *"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*
+      Your BMC item checkout URL.
+      Replace this only if the checkout URL changes.
+    */
+    const BMC_CHECKOUT_URL = "https://buymeacoffee.com/project.918/extras/checkout/a205bf4d-0918-4374-80f9-d4547bd8567d";
+
+    const product = "Jordan 97' Champions Tee";
+    const price = "$36.99";
+    const orderId = "P918-" + Math.floor(100000 + Math.random() * 900000);
+
+    const sizeInput = document.getElementById("size");
+    const colorInput = document.getElementById("color");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const summary = document.getElementById("summary");
+
+    const overlay = document.getElementById("checkoutOverlay");
+    const frame = document.getElementById("bmcFrame");
+    const loadingText = document.getElementById("loadingText");
+
+    function buildOrderText() {
+      return `Order ID: ${orderId}
+Product: ${product}
+Price: ${price}
+Size: ${sizeInput.value}
+Color: ${colorInput.value}
+Name: ${nameInput.value || "-"}
+Email: ${emailInput.value || "-"}`;
+    }
+
+    function updateSummary() {
+      summary.textContent = buildOrderText();
+    }
+
+    async function copyOrderDetails() {
+      const text = buildOrderText();
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        console.log("Clipboard blocked. Order details:", text);
+      }
+    }
+
+    async function openCheckout() {
+      await copyOrderDetails();
+
+      overlay.classList.add("active");
+      document.body.style.overflow = "hidden";
+
+      if (!frame.src) {
+        frame.src = BMC_CHECKOUT_URL;
+      }
+
+      setTimeout(() => {
+        loadingText.style.display = "none";
+      }, 1800);
+    }
+
+    function closeCheckout() {
+      overlay.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closeCheckout();
+      }
+    });
+
+    overlay.addEventListener("click", function(e) {
+      if (e.target === overlay) {
+        closeCheckout();
+      }
+    });
+
+    sizeInput.addEventListener("change", updateSummary);
+    colorInput.addEventListener("change", updateSummary);
+    nameInput.addEventListener("input", updateSummary);
+    emailInput.addEventListener("input", updateSummary);
+
+    updateSummary();
+  </script>
+</body>
+</html>
