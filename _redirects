@@ -1,3 +1,4 @@
-/home /index.html 301
-/shop /index.html 301
-/faq /faq.html 200
+/faq /faq/ 301
+/product /product/ 301
+/checkout /checkout/ 301
+/* /index.html 200

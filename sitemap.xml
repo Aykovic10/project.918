@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://project918.store/</loc>
-  </url>
-  <url>
-    <loc>https://project918.store/faq.html</loc>
-  </url>
+  <url><loc>https://project918.store/</loc></url>
+  <url><loc>https://project918.store/faq/</loc></url>
+  <url><loc>https://project918.store/product/?id=jordan-97-champions-tee</loc></url>
+  <url><loc>https://project918.store/product/?id=messi-23-eight-rings-tee</loc></url>
 </urlset>
