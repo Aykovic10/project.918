@@ -16,7 +16,8 @@
     html,
     body {
       width: 100%;
-      min-height: 100%;
+      height: 100%;
+      overflow: hidden;
     }
 
     body {
@@ -28,7 +29,10 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      overflow-x: hidden;
+    }
+
+    body.bmc-open {
+      overflow: hidden;
     }
 
     .card {
@@ -39,6 +43,8 @@
       border-radius: 28px;
       padding: 32px;
       box-shadow: 0 40px 110px rgba(0, 0, 0, 0.45);
+      position: relative;
+      z-index: 1;
     }
 
     .brand {
@@ -85,7 +91,7 @@
 
     input:focus,
     select:focus {
-      border-color: #111;
+      border-color: #ffffff;
     }
 
     .summary {
@@ -135,6 +141,47 @@
       line-height: 1.5;
     }
 
+    /* CLEAN DARK BACKDROP BEHIND BMC */
+    #p918Backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      display: none;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(255,255,255,0.13), transparent 0 28%),
+        radial-gradient(circle at 50% 55%, rgba(0,0,0,0.2), rgba(0,0,0,0.92) 72%);
+      backdrop-filter: blur(18px);
+    }
+
+    #p918Backdrop.active {
+      display: block;
+    }
+
+    /* SOFT SHADOW/PLATFORM UNDER THE WIDGET */
+    #p918WidgetShadow {
+      position: fixed;
+      z-index: 9991;
+      display: none;
+      top: 50%;
+      left: 50%;
+      width: 520px;
+      height: 720px;
+      max-width: calc(100vw - 24px);
+      max-height: calc(100vh - 24px);
+      transform: translate(-50%, -50%);
+      border-radius: 34px;
+      pointer-events: none;
+      box-shadow:
+        0 55px 150px rgba(0, 0, 0, 0.78),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 0 90px rgba(64, 220, 165, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    #p918WidgetShadow.active {
+      display: block;
+    }
+
     /*
       Hide the original floating BMC button.
       It still exists, but the customer only sees our Checkout button.
@@ -150,9 +197,8 @@
     }
 
     /*
-      Center the BMC widget popup.
-      No cropping, no masking, no fake shell.
-      Just centered + soft shadow.
+      Center the BMC widget.
+      No cropping. No iframe docking. Just clean centered overlay.
     */
     body.bmc-open #bmc-iframe,
     body.bmc-open iframe[src*="buymeacoffee.com"],
@@ -165,8 +211,10 @@
       bottom: auto !important;
       transform: translate(-50%, -50%) !important;
       z-index: 9999 !important;
-      border-radius: 28px !important;
-      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.45) !important;
+      border-radius: 30px !important;
+      box-shadow:
+        0 45px 120px rgba(0, 0, 0, 0.62),
+        0 20px 45px rgba(0, 0, 0, 0.45) !important;
     }
 
     @media (max-width: 540px) {
@@ -183,13 +231,19 @@
         font-size: 34px;
       }
 
+      #p918WidgetShadow {
+        width: calc(100vw - 22px);
+        height: calc(100vh - 70px);
+        border-radius: 28px;
+      }
+
       body.bmc-open #bmc-iframe,
       body.bmc-open iframe[src*="buymeacoffee.com"],
       body.bmc-open iframe[id*="bmc"],
       body.bmc-open iframe[name*="bmc"] {
-        width: calc(100vw - 24px) !important;
-        max-width: calc(100vw - 24px) !important;
-        border-radius: 22px !important;
+        width: calc(100vw - 22px) !important;
+        max-width: calc(100vw - 22px) !important;
+        border-radius: 26px !important;
       }
     }
   </style>
@@ -237,6 +291,9 @@
     </p>
   </main>
 
+  <div id="p918Backdrop"></div>
+  <div id="p918WidgetShadow"></div>
+
   <!-- BUY ME A COFFEE WIDGET -->
   <script
     data-name="BMC-Widget"
@@ -262,6 +319,9 @@
     const emailInput = document.getElementById("email");
     const summary = document.getElementById("summary");
     const copied = document.getElementById("copied");
+
+    const backdrop = document.getElementById("p918Backdrop");
+    const widgetShadow = document.getElementById("p918WidgetShadow");
 
     function buildOrderDetails() {
       return `Order ID: ${orderId}
@@ -304,9 +364,21 @@ Email: ${emailInput.value || "-"}`;
         frame.style.setProperty("bottom", "auto", "important");
         frame.style.setProperty("transform", "translate(-50%, -50%)", "important");
         frame.style.setProperty("z-index", "9999", "important");
-        frame.style.setProperty("border-radius", "28px", "important");
-        frame.style.setProperty("box-shadow", "0 28px 70px rgba(0,0,0,0.45)", "important");
+        frame.style.setProperty("border-radius", "30px", "important");
+        frame.style.setProperty("box-shadow", "0 45px 120px rgba(0,0,0,0.62), 0 20px 45px rgba(0,0,0,0.45)", "important");
       });
+    }
+
+    function showOverlay() {
+      document.body.classList.add("bmc-open");
+      backdrop.classList.add("active");
+      widgetShadow.classList.add("active");
+    }
+
+    function hideOverlay() {
+      document.body.classList.remove("bmc-open");
+      backdrop.classList.remove("active");
+      widgetShadow.classList.remove("active");
     }
 
     async function checkout() {
@@ -319,8 +391,7 @@ Email: ${emailInput.value || "-"}`;
         return;
       }
 
-      document.body.classList.add("bmc-open");
-
+      showOverlay();
       bmcButton.click();
 
       setTimeout(centerBMCWidget, 100);
@@ -328,6 +399,23 @@ Email: ${emailInput.value || "-"}`;
       setTimeout(centerBMCWidget, 700);
       setTimeout(centerBMCWidget, 1200);
     }
+
+    /*
+      If customer clicks the dark area, close the BMC widget by clicking the hidden BMC button.
+    */
+    backdrop.addEventListener("click", () => {
+      const bmcButton = document.querySelector("#bmc-wbtn");
+      if (bmcButton) bmcButton.click();
+      hideOverlay();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const bmcButton = document.querySelector("#bmc-wbtn");
+        if (bmcButton) bmcButton.click();
+        hideOverlay();
+      }
+    });
 
     setInterval(() => {
       if (document.body.classList.contains("bmc-open")) {
