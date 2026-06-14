@@ -1,198 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project.918 Checkout Test</title>
+<style>
+  /* Dark background behind BMC popup */
+  #p918-bmc-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(12px);
+    display: none;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #080808;
-      color: white;
-      font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  #p918-bmc-backdrop.active {
+    display: block;
+  }
+
+  /* Center the Buy Me a Coffee popup iframe */
+  #bmc-iframe,
+  iframe[src*="buymeacoffee.com"] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(460px, calc(100vw - 28px)) !important;
+    height: min(680px, calc(100vh - 28px)) !important;
+    border-radius: 18px !important;
+    z-index: 9999 !important;
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.65) !important;
+  }
+
+  /* Move the BMC close/minimize circle near the centered popup */
+  #bmc-wbtn {
+    z-index: 10000 !important;
+  }
+
+  body.bmc-open #bmc-wbtn {
+    position: fixed !important;
+    right: calc(50% - min(230px, 50vw - 14px)) !important;
+    bottom: calc(50% - min(340px, 50vh - 14px) - 58px) !important;
+  }
+
+  @media (max-width: 520px) {
+    #bmc-iframe,
+    iframe[src*="buymeacoffee.com"] {
+      width: calc(100vw - 18px) !important;
+      height: calc(100vh - 80px) !important;
+      border-radius: 16px !important;
     }
 
-    .card {
-      width: 360px;
-      background: #111;
-      border: 1px solid #262626;
-      border-radius: 24px;
-      padding: 28px;
+    body.bmc-open #bmc-wbtn {
+      right: 18px !important;
+      bottom: 18px !important;
+    }
+  }
+</style>
+
+<div id="p918-bmc-backdrop"></div>
+
+<script>
+  function centerBMCWidget() {
+    const frame =
+      document.querySelector("#bmc-iframe") ||
+      document.querySelector('iframe[src*="buymeacoffee.com"]');
+
+    if (frame) {
+      frame.style.position = "fixed";
+      frame.style.top = "50%";
+      frame.style.left = "50%";
+      frame.style.right = "auto";
+      frame.style.bottom = "auto";
+      frame.style.transform = "translate(-50%, -50%)";
+      frame.style.zIndex = "9999";
+    }
+  }
+
+  function openBMC() {
+    const bmcButton = document.querySelector("#bmc-wbtn");
+
+    if (!bmcButton) {
+      alert("Checkout is still loading. Try again in a second.");
+      return;
     }
 
-    .brand {
-      font-size: 12px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: #aaa;
-      margin-bottom: 16px;
-    }
+    document.body.classList.add("bmc-open");
+    document.getElementById("p918-bmc-backdrop").classList.add("active");
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: 34px;
-    }
+    bmcButton.click();
 
-    .price {
-      font-size: 22px;
-      margin-bottom: 22px;
-    }
+    setTimeout(centerBMCWidget, 250);
+    setTimeout(centerBMCWidget, 700);
+    setTimeout(centerBMCWidget, 1200);
+  }
 
-    label {
-      display: block;
-      margin-top: 14px;
-      margin-bottom: 7px;
-      color: #999;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+  function closeBMCVisuals() {
+    document.body.classList.remove("bmc-open");
+    document.getElementById("p918-bmc-backdrop").classList.remove("active");
+  }
 
-    input,
-    select {
-      width: 100%;
-      height: 46px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      background: #050505;
-      color: white;
-      padding: 0 12px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
+  document.getElementById("p918-bmc-backdrop").addEventListener("click", () => {
+    const bmcButton = document.querySelector("#bmc-wbtn");
+    if (bmcButton) bmcButton.click();
+    closeBMCVisuals();
+  });
 
-    .checkout-btn {
-      width: 100%;
-      height: 54px;
-      margin-top: 22px;
-      border-radius: 999px;
-      border: none;
-      background: #40DCA5;
-      color: #050505;
-      font-size: 15px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .note {
-      margin-top: 12px;
-      font-size: 12px;
-      line-height: 1.5;
-      color: #888;
-      text-align: center;
-    }
-
-    .copied {
-      display: none;
-      margin-top: 12px;
-      font-size: 12px;
-      color: #40DCA5;
-      text-align: center;
-    }
-  </style>
-</head>
-
-<body>
-  <main class="card">
-    <div class="brand">Project.918</div>
-
-    <h1>Test Tee</h1>
-    <div class="price">$1.00</div>
-
-    <label>Size</label>
-    <select id="size">
-      <option>S</option>
-      <option selected>M</option>
-      <option>L</option>
-      <option>XL</option>
-    </select>
-
-    <label>Name</label>
-    <input id="name" placeholder="Your name" />
-
-    <label>Email</label>
-    <input id="email" placeholder="your@email.com" />
-
-    <button class="checkout-btn" onclick="checkout()">
-      Checkout
-    </button>
-
-    <div class="copied" id="copied">
-      Order details copied. Paste them in the BMC message box.
-    </div>
-
-    <p class="note">
-      Payment opens on this page through Buy Me a Coffee.
-    </p>
-  </main>
-
-  <!-- Hidden BMC widget. We use it as the payment engine. -->
-  <script
-    data-name="BMC-Widget"
-    data-cfasync="false"
-    src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
-    data-id="project.918"
-    data-description="Project.918 Checkout"
-    data-message="Paste your Project.918 order details here."
-    data-color="#40DCA5"
-    data-position="Right"
-    data-x_margin="18"
-    data-y_margin="18">
-  </script>
-
-  <script>
-    const orderId = "P918-" + Math.floor(100000 + Math.random() * 900000);
-
-    function buildOrderDetails() {
-      const size = document.getElementById("size").value;
-      const name = document.getElementById("name").value || "-";
-      const email = document.getElementById("email").value || "-";
-
-      return `Order ID: ${orderId}
-Product: Project.918 Test Tee
-Price: $1.00
-Size: ${size}
-Name: ${name}
-Email: ${email}`;
-    }
-
-    async function checkout() {
-      const orderDetails = buildOrderDetails();
-
-      try {
-        await navigator.clipboard.writeText(orderDetails);
-        document.getElementById("copied").style.display = "block";
-      } catch (e) {
-        alert(orderDetails);
-      }
-
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
       const bmcButton = document.querySelector("#bmc-wbtn");
-
-      if (bmcButton) {
-        bmcButton.click();
-      } else {
-        alert("Checkout is loading. Try again in one second.");
-      }
+      if (bmcButton) bmcButton.click();
+      closeBMCVisuals();
     }
+  });
 
-    // Hide the original floating BMC button
-    const hideBMC = setInterval(() => {
-      const bmcButton = document.querySelector("#bmc-wbtn");
-
-      if (bmcButton) {
-        bmcButton.style.opacity = "0";
-        bmcButton.style.pointerEvents = "none";
-        bmcButton.style.width = "1px";
-        bmcButton.style.height = "1px";
-        bmcButton.style.overflow = "hidden";
-        clearInterval(hideBMC);
-      }
-    }, 300);
-  </script>
-</body>
-</html>
+  /* Keep fixing position if BMC reloads/repositions itself */
+  setInterval(() => {
+    if (document.body.classList.contains("bmc-open")) {
+      centerBMCWidget();
+    }
+  }, 500);
+</script>
