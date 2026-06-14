@@ -13,6 +13,13 @@
       padding: 0;
     }
 
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       min-height: 100vh;
       background: #050505;
@@ -22,7 +29,6 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      overflow-x: hidden;
     }
 
     .card {
@@ -129,6 +135,7 @@
       line-height: 1.5;
     }
 
+    /* DARK BACKDROP BEHIND BMC */
     #p918BmcBackdrop {
       position: fixed;
       inset: 0;
@@ -142,6 +149,7 @@
       display: block;
     }
 
+    /* CUSTOM CLOSE BUTTON */
     #p918BmcClose {
       position: fixed;
       z-index: 10004;
@@ -164,41 +172,27 @@
     }
 
     /*
-      BIG WHITE MASK.
-      This sits ABOVE the BMC iframe and covers the ugly internal scrollbar.
-      It is intentionally wider than before.
+      THIS IS ONLY A MASK OVER THE SCROLLBAR INSIDE THE BMC WIDGET.
+      It does NOT create page scroll.
     */
-    #p918ScrollCover {
+    #p918WidgetScrollbarMask {
       position: fixed;
       z-index: 10003;
       display: none;
-      width: 34px;
+      width: 24px;
       background: #ffffff;
       pointer-events: none;
       border-radius: 0 28px 28px 0;
     }
 
-    #p918ScrollCover.active {
+    #p918WidgetScrollbarMask.active {
       display: block;
     }
 
     /*
-      Small bottom white mask because BMC sometimes shows the grey bar near bottom too.
+      Hide original floating BMC button.
+      Your own Checkout button triggers it.
     */
-    #p918BottomCover {
-      position: fixed;
-      z-index: 10002;
-      display: none;
-      height: 72px;
-      background: linear-gradient(to top, #ffffff 0%, #ffffff 70%, rgba(255,255,255,0) 100%);
-      pointer-events: none;
-      border-radius: 0 0 28px 28px;
-    }
-
-    #p918BottomCover.active {
-      display: block;
-    }
-
     #bmc-wbtn {
       opacity: 0 !important;
       pointer-events: none !important;
@@ -209,6 +203,9 @@
       bottom: 0 !important;
     }
 
+    /*
+      Center the actual BMC popup.
+    */
     body.bmc-open #bmc-iframe,
     body.bmc-open iframe[src*="buymeacoffee.com"],
     body.bmc-open iframe[id*="bmc"],
@@ -228,6 +225,10 @@
     }
 
     @media (max-width: 540px) {
+      body {
+        padding: 18px;
+      }
+
       .card {
         padding: 24px;
         border-radius: 24px;
@@ -246,13 +247,9 @@
         border-radius: 24px !important;
       }
 
-      #p918ScrollCover {
-        width: 30px;
+      #p918WidgetScrollbarMask {
+        width: 24px;
         border-radius: 0 24px 24px 0;
-      }
-
-      #p918BottomCover {
-        border-radius: 0 0 24px 24px;
       }
 
       #p918BmcClose {
@@ -306,9 +303,9 @@
 
   <div id="p918BmcBackdrop"></div>
   <button id="p918BmcClose" onclick="closeBMC()">×</button>
-  <div id="p918ScrollCover"></div>
-  <div id="p918BottomCover"></div>
+  <div id="p918WidgetScrollbarMask"></div>
 
+  <!-- BUY ME A COFFEE WIDGET -->
   <script
     data-name="BMC-Widget"
     data-cfasync="false"
@@ -336,8 +333,7 @@
 
     const backdrop = document.getElementById("p918BmcBackdrop");
     const customClose = document.getElementById("p918BmcClose");
-    const scrollCover = document.getElementById("p918ScrollCover");
-    const bottomCover = document.getElementById("p918BottomCover");
+    const scrollbarMask = document.getElementById("p918WidgetScrollbarMask");
 
     function buildOrderDetails() {
       return `Order ID: ${orderId}
@@ -373,35 +369,26 @@ Email: ${emailInput.value || "-"}`;
       );
     }
 
-    function positionHelpers(frame) {
+    function positionOverlayPieces(frame) {
       if (!frame) return;
 
       const rect = frame.getBoundingClientRect();
 
       /*
-        Right mask:
-        covers the scrollbar area aggressively.
+        Mask ONLY the internal BMC scrollbar area.
+        This is placed over the iframe's right edge.
       */
-      scrollCover.style.left = (rect.right - 34) + "px";
-      scrollCover.style.top = rect.top + "px";
-      scrollCover.style.height = rect.height + "px";
-      scrollCover.style.width = "34px";
+      scrollbarMask.style.left = (rect.right - 24) + "px";
+      scrollbarMask.style.top = (rect.top + 8) + "px";
+      scrollbarMask.style.height = (rect.height - 16) + "px";
+      scrollbarMask.style.width = "24px";
+      scrollbarMask.style.borderRadius = "0 28px 28px 0";
 
       /*
-        Bottom mask:
-        covers bottom BMC footer strip overlap a little.
+        Close button inside the top-right of the BMC card.
       */
-      bottomCover.style.left = rect.left + "px";
-      bottomCover.style.top = (rect.bottom - 72) + "px";
-      bottomCover.style.width = rect.width + "px";
-      bottomCover.style.height = "72px";
-
-      /*
-        Close button:
-        clean top-right position.
-      */
-      customClose.style.left = (rect.right - 78) + "px";
-      customClose.style.top = (rect.top + 26) + "px";
+      customClose.style.left = (rect.right - 74) + "px";
+      customClose.style.top = (rect.top + 24) + "px";
     }
 
     function forceCenterBMC() {
@@ -426,7 +413,7 @@ Email: ${emailInput.value || "-"}`;
         frame.style.setProperty("box-shadow", "0 45px 140px rgba(0,0,0,.72)", "important");
         frame.style.setProperty("overflow", "hidden", "important");
 
-        positionHelpers(frame);
+        positionOverlayPieces(frame);
       });
     }
 
@@ -443,8 +430,7 @@ Email: ${emailInput.value || "-"}`;
       document.body.classList.add("bmc-open");
       backdrop.classList.add("active");
       customClose.classList.add("active");
-      scrollCover.classList.add("active");
-      bottomCover.classList.add("active");
+      scrollbarMask.classList.add("active");
 
       bmcButton.click();
 
@@ -466,8 +452,7 @@ Email: ${emailInput.value || "-"}`;
       document.body.classList.remove("bmc-open");
       backdrop.classList.remove("active");
       customClose.classList.remove("active");
-      scrollCover.classList.remove("active");
-      bottomCover.classList.remove("active");
+      scrollbarMask.classList.remove("active");
     }
 
     backdrop.addEventListener("click", closeBMC);
